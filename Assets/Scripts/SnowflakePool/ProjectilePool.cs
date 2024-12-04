@@ -5,12 +5,18 @@ using UnityEngine.Serialization;
 public class ProjectilePool : Singleton<ProjectilePool>
 {
     [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private int poolSize;
     private static Queue<GameObject> _pool = new Queue<GameObject>();
     
-    void Start()
+    
+    void Awake()
     {
-        GameObject obj = Instantiate(projectilePrefab, transform.position, Quaternion.identity,transform.parent);
-        _pool.Enqueue(obj);
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject obj = Instantiate(projectilePrefab, transform.position, Quaternion.identity, transform);
+            _pool.Enqueue(obj);
+            obj.SetActive(false);
+        }
     }
 
     void Update()

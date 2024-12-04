@@ -31,23 +31,29 @@ public class Snowflake : MonoBehaviour
 
     IEnumerator Shoot(bool fromPool)
     {
-        if (fromPool)
+        while (true)
         {
-            //spawn projectiles from pool
-            Projectile projectile = ProjectilePool.GetFromPool().GetComponent<Projectile>();
-            projectile.transform.position = transform.position;
-            projectile.SetTarget(_target.transform.position);
+            if (fromPool)
+            {
+                //spawn projectiles from pool
+                Projectile projectile = ProjectilePool.GetFromPool().GetComponent<Projectile>();
+                projectile.usePool = true;
+                projectile.transform.position = transform.position;
+                projectile.SetTarget(_target.transform.position);
 
+            }
+            else
+            {
+                //instantiate projectiles at runtime
+                Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity)
+                    .GetComponent<Projectile>();
+                projectile.usePool = false;
+                projectile.SetTarget(_target.transform.position);
+            }
+            
+            yield return new WaitForSeconds(shootRateSeconds);
         }
-        else
-        {
-            //instantiate projectiles at runtime
-            Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity).GetComponent<Projectile>();
-            projectile.SetTarget(_target.transform.position);
-        }
-        
-        yield return new WaitForSeconds(shootRateSeconds);
+
     }
-    
     
 }
